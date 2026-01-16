@@ -7,13 +7,13 @@
 
 <style>
     body {
-        background: #d4b8f7;
+        background: #7b43b4;
         font-family: Arial, sans-serif;
         margin: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
     }
 
     .chat-container {
@@ -24,9 +24,10 @@
         border-radius: 15px;
         box-shadow: 0 0 10px rgba(0,0,0,0.2);
         position: relative;
+        display: flex;
+        flex-direction: column;
     }
 
-    
     .logo {
         display: flex;
         align-items: center;
@@ -37,7 +38,7 @@
     }
 
     .logo img {
-        width: 60px; 
+        width: 60px;
         height: 60px;
         border-radius: 50%;
         object-fit: cover;
@@ -47,15 +48,14 @@
     .logo span {
         font-weight: 600;
         color: #4b0082;
-        font-size: 22px; 
-        letter-spacing: 0.5px;
+        font-size: 22px;
         transform: translateY(2px);
     }
 
     #chat {
-        height: 360px;
+        flex: 1;
         overflow-y: auto;
-        margin-top: 95px; 
+        margin-top: 95px;
         margin-bottom: 15px;
         padding-right: 8px;
     }
@@ -72,14 +72,13 @@
     .bot {
         background: #ffffff;
         color: #4b0082;
-        text-align: left;
     }
 
     .user {
         background: #7b43b4;
         color: #fff;
-        text-align: right;
         margin-left: auto;
+        text-align: right;
     }
 
     .input-row {
@@ -104,25 +103,30 @@
         cursor: pointer;
         font-weight: bold;
         font-size: 14px;
-        transition: background 0.2s ease;
     }
 
     button:hover {
         background: #642e9b;
     }
 
-    @media (max-width: 480px) {
-        .logo img {
-            width: 50px;
-            height: 50px;
+    /* 🔹 QUANDO INSPECIONAR / MOBILE */
+    @media (max-width: 768px) {
+        body {
+            background: #dde1ff;
+            align-items: flex-start;
         }
 
-        .logo span {
-            font-size: 19px;
+        .chat-container {
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
         }
     }
 </style>
 </head>
+
 <body>
 
 <div class="chat-container">
@@ -149,25 +153,24 @@ window.onload = () => {
 };
 
 function botMessage(text) {
-    let chat = document.getElementById("chat");
+    const chat = document.getElementById("chat");
     chat.innerHTML += `<div class="message bot">${text}</div>`;
     chat.scrollTop = chat.scrollHeight;
 }
 
 function userMessage(text) {
-    let chat = document.getElementById("chat");
+    const chat = document.getElementById("chat");
     chat.innerHTML += `<div class="message user">${text}</div>`;
     chat.scrollTop = chat.scrollHeight;
 }
 
 function sendMessage() {
-    let input = document.getElementById("userInput");
-    let msg = input.value.trim();
-    if (msg === "") return;
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
 
     userMessage(msg);
     input.value = "";
-
     handleResponse(msg);
 }
 
@@ -176,33 +179,20 @@ function handleResponse(msg) {
         if (msg === "1") {
             mode = "detailed";
             step = 1;
-            botMessage("Perfeito! 💜 Muito obrigada por escolher, ficamos muito felizes e iremos te enviar as nossas opções para melhor te atender. Em caso de dúvidas, estaremos à disposição. A equipe DialogX agradece o contato!");
-            botMessage("Aqui estão algumas opções para te ajudar:<br>1 - Ver nossos planos<br>2 - Ver tabela de preços<br>3 - Falar com suporte");
+            botMessage("Perfeito! 💜 Muito obrigada por escolher.");
+            botMessage("1 - Planos<br>2 - Preços<br>3 - Suporte");
         } else if (msg === "2") {
             mode = "direct";
             step = 1;
-            botMessage("Certo. Escolha:<br>1 - Planos<br>2 - Preços<br>3 - Suporte");
+            botMessage("Escolha:<br>1 - Planos<br>2 - Preços<br>3 - Suporte");
         } else {
-            botMessage("Opção inválida. Por favor, digite 1 ou 2.");
+            botMessage("Digite 1 ou 2.");
         }
-    }
-    else if (step === 1) {
-        if (mode === "detailed") {
-            if (msg === "1") {
-                botMessage("💠 Plano Básico: ideal para começar<br>💠 Plano Pro: mais recursos, ideal para crescer<br>💠 Plano Premium: tudo sem limites e com prioridade");
-            } else if (msg === "2") {
-                botMessage("🔹 Básico: R$29/mês<br>🔹 Pro: R$59/mês<br>🔹 Premium: R$99/mês");
-            } else if (msg === "3") {
-                botMessage("Um atendente físico entrará em contato. 💬");
-            } else {
-                botMessage("Por favor, escolha 1, 2 ou 3.");
-            }
-        } else if (mode === "direct") {
-            if (msg === "1") botMessage("Planos: Básico, Pro, Premium.");
-            else if (msg === "2") botMessage("Preços: R$29, R$59, R$99.");
-            else if (msg === "3") botMessage("Encaminhando para suporte...");
-            else botMessage("Escolha 1, 2 ou 3.");
-        }
+    } else {
+        if (msg === "1") botMessage("Planos: Básico, Pro, Premium.");
+        else if (msg === "2") botMessage("Preços: R$29, R$59, R$99.");
+        else if (msg === "3") botMessage("Encaminhando para suporte...");
+        else botMessage("Escolha 1, 2 ou 3.");
     }
 }
 </script>
