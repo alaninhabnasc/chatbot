@@ -130,6 +130,7 @@
 <body>
 
 <div class="chat-container">
+
     <div class="logo">
         <img src="logo.jpeg" alt="Logo">
         <span>DialogX</span>
@@ -141,60 +142,84 @@
         <input id="userInput" type="text" placeholder="Digite aqui..." autofocus>
         <button onclick="sendMessage()">Enviar</button>
     </div>
+
 </div>
 
 <script>
-let step = 0;
-let mode = "";
 
 window.onload = () => {
-    botMessage("Olá!");
-    botMessage("Como você deseja ser atendido(a)?<br>1 - Detalhadamente<br>2 - Diretamente");
+
+    botMessage("Olá! 💜");
+    botMessage("Sou a IA do DialogX. Como posso ajudar você hoje?");
+
 };
 
 function botMessage(text) {
+
     const chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="message bot">${text}</div>`;
+
+    chat.innerHTML += `
+        <div class="message bot">${text}</div>
+    `;
+
     chat.scrollTop = chat.scrollHeight;
 }
 
 function userMessage(text) {
+
     const chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="message user">${text}</div>`;
+
+    chat.innerHTML += `
+        <div class="message user">${text}</div>
+    `;
+
     chat.scrollTop = chat.scrollHeight;
 }
 
 function sendMessage() {
+
     const input = document.getElementById("userInput");
+
     const msg = input.value.trim();
+
     if (!msg) return;
 
     userMessage(msg);
+
     input.value = "";
+
     handleResponse(msg);
 }
 
-function handleResponse(msg) {
-    if (step === 0) {
-        if (msg === "1") {
-            mode = "detailed";
-            step = 1;
-            botMessage("Perfeito! 💜 Muito obrigada por escolher.");
-            botMessage("1 - Planos<br>2 - Preços<br>3 - Suporte");
-        } else if (msg === "2") {
-            mode = "direct";
-            step = 1;
-            botMessage("Escolha:<br>1 - Planos<br>2 - Preços<br>3 - Suporte");
-        } else {
-            botMessage("Digite 1 ou 2.");
-        }
-    } else {
-        if (msg === "1") botMessage("Planos: Básico, Pro, Premium.");
-        else if (msg === "2") botMessage("Preços: R$29, R$59, R$99.");
-        else if (msg === "3") botMessage("Encaminhando para suporte...");
-        else botMessage("Escolha 1, 2 ou 3.");
+async function handleResponse(msg) {
+
+    botMessage("Digitando...");
+
+    try {
+
+        const resposta = await fetch(
+            `https://text.pollinations.ai/${encodeURIComponent(msg)}`
+        );
+
+        const textoIA = await resposta.text();
+
+        const mensagens = document.querySelectorAll(".bot");
+
+        mensagens[mensagens.length - 1].remove();
+
+        botMessage(textoIA);
+
+    } catch (erro) {
+
+        const mensagens = document.querySelectorAll(".bot");
+
+        mensagens[mensagens.length - 1].remove();
+
+        botMessage("Erro ao conectar com IA.");
+
     }
 }
+
 </script>
 
 </body>
