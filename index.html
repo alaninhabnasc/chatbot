@@ -139,6 +139,7 @@
     <div id="chat"></div>
 
     <div class="input-row">
+
         <input 
             id="userInput" 
             type="text" 
@@ -149,6 +150,7 @@
         <button onclick="sendMessage()">
             Enviar
         </button>
+
     </div>
 
 </div>
@@ -217,8 +219,15 @@ async function handleResponse(msg) {
 
     try {
 
+        const prompt = `
+Você é a IA do DialogX.
+Responda de forma curta, rápida, amigável e inteligente.
+
+Usuário: ${msg}
+`;
+
         const resposta = await fetch(
-            `https://text.pollinations.ai/${encodeURIComponent(msg)}`
+            `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`
         );
 
         const textoIA = await resposta.text();
