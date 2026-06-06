@@ -219,64 +219,24 @@ async function handleResponse(msg) {
 
     try {
 
-        // Etapa 1: verificar se a mensagem é relacionada a vendas
-
-        const verificador = await fetch(
-            `https://text.pollinations.ai/${encodeURIComponent(`
-Você é um classificador.
-
-Responda APENAS com:
-SIM
-ou
-NÃO
-
-A mensagem abaixo está relacionada a:
-- vendas
-- produtos
-- serviços
-- orçamento
-- estoque
-- pagamentos
-- pedidos
-- entregas
-- atendimento comercial
-
-Mensagem:
-${msg}
-`)}?model=openai`
-        );
-
-        const resultado = (await verificador.text())
-            .trim()
-            .toUpperCase();
-
-        const mensagens = document.querySelectorAll(".bot");
-
-        if (mensagens.length > 0) {
-            mensagens[mensagens.length - 1].remove();
-        }
-
-        if (!resultado.includes("SIM")) {
-
-            botMessage(
-                "Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas."
-            );
-
-            return;
-        }
-
-        // Etapa 2: responder como assistente de vendas
-
-        botMessage("Digitando...");
-
         const prompt = `
-Você é a assistente virtual de uma empresa.
+Você é uma assistente virtual especializada em vendas.
 
-REGRAS:
-- Responda apenas assuntos relacionados a vendas.
-- Ajude com produtos, preços, estoque, orçamento, pedidos, pagamentos, frete e entregas.
+REGRAS IMPORTANTES:
+
+- Ajude clientes interessados em comprar produtos ou serviços.
+- Responda dúvidas sobre produtos, preços, estoque, pedidos, pagamentos, entregas e orçamentos.
+- Considere como assuntos de vendas mensagens como:
+  * quero camisas
+  * preciso de um notebook
+  * vocês vendem tênis?
+  * tem produto disponível?
+  * quero fazer um orçamento
+  * quanto custa?
 - Seja simpática, profissional e objetiva.
-- Nunca responda assuntos fora do contexto comercial.
+- Se a pergunta NÃO tiver relação com compras, vendas, produtos ou serviços, responda EXATAMENTE:
+
+Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas.
 
 Cliente:
 ${msg}
@@ -288,10 +248,10 @@ ${msg}
 
         const textoIA = await resposta.text();
 
-        const mensagens2 = document.querySelectorAll(".bot");
+        const mensagens = document.querySelectorAll(".bot");
 
-        if (mensagens2.length > 0) {
-            mensagens2[mensagens2.length - 1].remove();
+        if (mensagens.length > 0) {
+            mensagens[mensagens.length - 1].remove();
         }
 
         botMessage(textoIA);
