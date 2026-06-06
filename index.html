@@ -160,7 +160,7 @@
 window.onload = () => {
 
     botMessage("Olá! 💜");
-    botMessage("Sou a IA do DialogX. Como posso ajudar você hoje?");
+    botMessage("Sou a assistente virtual do setor de vendas. Como posso ajudar?");
 
 };
 
@@ -219,11 +219,67 @@ async function handleResponse(msg) {
 
     try {
 
-        const prompt = `
-Você é a IA do DialogX.
-Responda de forma curta, rápida, amigável e inteligente.
+        // Etapa 1: verificar se a mensagem é relacionada a vendas
 
-Usuário: ${msg}
+        const verificador = await fetch(
+            `https://text.pollinations.ai/${encodeURIComponent(`
+Você é um classificador.
+
+Responda APENAS com:
+SIM
+ou
+NÃO
+
+A mensagem abaixo está relacionada a:
+- vendas
+- produtos
+- serviços
+- orçamento
+- estoque
+- pagamentos
+- pedidos
+- entregas
+- atendimento comercial
+
+Mensagem:
+${msg}
+`)}?model=openai`
+        );
+
+        const resultado = (await verificador.text())
+            .trim()
+            .toUpperCase();
+
+        const mensagens = document.querySelectorAll(".bot");
+
+        if (mensagens.length > 0) {
+            mensagens[mensagens.length - 1].remove();
+        }
+
+        if (!resultado.includes("SIM")) {
+
+            botMessage(
+                "Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas."
+            );
+
+            return;
+        }
+
+        // Etapa 2: responder como assistente de vendas
+
+        botMessage("Digitando...");
+
+        const prompt = `
+Você é a assistente virtual de uma empresa.
+
+REGRAS:
+- Responda apenas assuntos relacionados a vendas.
+- Ajude com produtos, preços, estoque, orçamento, pedidos, pagamentos, frete e entregas.
+- Seja simpática, profissional e objetiva.
+- Nunca responda assuntos fora do contexto comercial.
+
+Cliente:
+${msg}
 `;
 
         const resposta = await fetch(
@@ -232,9 +288,11 @@ Usuário: ${msg}
 
         const textoIA = await resposta.text();
 
-        const mensagens = document.querySelectorAll(".bot");
+        const mensagens2 = document.querySelectorAll(".bot");
 
-        mensagens[mensagens.length - 1].remove();
+        if (mensagens2.length > 0) {
+            mensagens2[mensagens2.length - 1].remove();
+        }
 
         botMessage(textoIA);
 
@@ -242,14 +300,15 @@ Usuário: ${msg}
 
         const mensagens = document.querySelectorAll(".bot");
 
-        mensagens[mensagens.length - 1].remove();
+        if (mensagens.length > 0) {
+            mensagens[mensagens.length - 1].remove();
+        }
 
-        botMessage("Erro ao conectar com IA.");
+        botMessage("Erro ao conectar com a IA.");
+
+        console.error(erro);
 
     }
 }
 
 </script>
-
-</body>
-</html>
