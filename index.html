@@ -217,36 +217,9 @@ async function handleResponse(msg) {
 
     botMessage("Digitando...");
 
-    try {
+    setTimeout(() => {
 
-        const prompt = `
-Você é uma assistente virtual especializada em vendas.
-
-REGRAS IMPORTANTES:
-
-- Ajude clientes interessados em comprar produtos ou serviços.
-- Responda dúvidas sobre produtos, preços, estoque, pedidos, pagamentos, entregas e orçamentos.
-- Considere como assuntos de vendas mensagens como:
-  * quero camisas
-  * preciso de um notebook
-  * vocês vendem tênis?
-  * tem produto disponível?
-  * quero fazer um orçamento
-  * quanto custa?
-- Seja simpática, profissional e objetiva.
-- Se a pergunta NÃO tiver relação com compras, vendas, produtos ou serviços, responda EXATAMENTE:
-
-Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas.
-
-Cliente:
-${msg}
-`;
-
-        const resposta = await fetch(
-            `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`
-        );
-
-        const textoIA = await resposta.text();
+        const texto = msg.toLowerCase();
 
         const mensagens = document.querySelectorAll(".bot");
 
@@ -254,21 +227,62 @@ ${msg}
             mensagens[mensagens.length - 1].remove();
         }
 
-        botMessage(textoIA);
+        if (
+            texto.includes("roupa") ||
+            texto.includes("camisa") ||
+            texto.includes("camiseta")
+        ) {
 
-    } catch (erro) {
+            botMessage(
+                "Temos diversas roupas disponíveis. Qual modelo você procura?"
+            );
 
-        const mensagens = document.querySelectorAll(".bot");
+        } else if (
+            texto.includes("preço") ||
+            texto.includes("valor") ||
+            texto.includes("custa")
+        ) {
 
-        if (mensagens.length > 0) {
-            mensagens[mensagens.length - 1].remove();
+            botMessage(
+                "Os preços variam conforme o produto. Qual item deseja consultar?"
+            );
+
+        } else if (
+            texto.includes("entrega") ||
+            texto.includes("frete")
+        ) {
+
+            botMessage(
+                "Realizamos entregas para todo o Brasil."
+            );
+
+        } else if (
+            texto.includes("pagamento") ||
+            texto.includes("pix") ||
+            texto.includes("cartão")
+        ) {
+
+            botMessage(
+                "Aceitamos PIX, cartão de crédito e débito."
+            );
+
+        } else if (
+            texto.includes("estoque")
+        ) {
+
+            botMessage(
+                "Temos produtos disponíveis em estoque."
+            );
+
+        } else {
+
+            botMessage(
+                "Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas."
+            );
+
         }
 
-        botMessage("Erro ao conectar com a IA.");
-
-        console.error(erro);
-
-    }
+    }, 1000);
 }
 
 </script>
