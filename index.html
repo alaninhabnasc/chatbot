@@ -160,7 +160,7 @@
 window.onload = () => {
 
 botMessage("Olá! 💜");
-botMessage("Bem-vindo à ModaViva.");
+botMessage("Bem-vindo à ModaVia.");
 botMessage("Posso informar preços, tamanhos, cores, estoque, frete e formas de pagamento.");
 botMessage("Quando desejar finalizar uma compra, solicite um atendente.");
 
@@ -216,92 +216,101 @@ document
 
 });
 
-async function handleResponse(msg) {
-
-const produtos = [
-{
-nome: "camiseta básica premium",
-preco: "R$ 49,90",
-cores: ["preto", "branco", "azul", "vermelho"],
-tamanhos: ["P", "M", "G", "GG"]
-},
-{
-nome: "camisa social slim",
-preco: "R$ 89,90",
-cores: ["branco", "azul", "preto"],
-tamanhos: ["P", "M", "G", "GG"]
-},
-{
-nome: "calça jeans premium",
-preco: "R$ 129,90",
-cores: ["azul", "preto"],
-tamanhos: ["38", "40", "42", "44", "46"]
-}
-];
+async function handleResponse(msg){
 
 botMessage("Digitando...");
 
-setTimeout(() => {
+const prompt = `
+Você é Mariana, assistente virtual da loja ModaViva.
 
-const texto = msg.toLowerCase();
+REGRAS:
+
+* Responda apenas sobre a ModaViva.
+* Seja simpática e profissional.
+* Não fale de assuntos fora da loja.
+* Nunca invente produtos.
+
+LOJA MODAVIVA
+
+Camiseta Básica
+Preço: R$49,90
+Cores: preta, branca e azul
+Estoque:
+P: 10
+M: 8
+G: 5
+GG: 2
+
+Camisa Social
+Preço: R$89,90
+Cores: preta, branca e azul
+Estoque:
+P: 4
+M: 6
+G: 7
+GG: 3
+
+Calça Jeans
+Preço: R$129,90
+Cores: preta e azul
+Estoque:
+38: 5
+40: 8
+42: 6
+44: 4
+46: 2
+
+Formas de pagamento:
+PIX
+Cartão de crédito
+Cartão de débito
+Boleto
+
+Entrega:
+Todo o Brasil
+Prazo de 3 a 10 dias úteis
+Frete grátis acima de R$199
+
+Trocas:
+Até 30 dias
+
+Atendente humano:
+Mariana
+
+Se o cliente quiser comprar, finalizar pedido ou falar com um atendente, responda:
+"Perfeito! Vou transferir você para nossa atendente Mariana para finalizar sua compra."
+
+Pergunta do cliente:
+${msg}
+`;
+
+try{
+
+const response = await fetch(
+`https://text.pollinations.ai/${encodeURIComponent(prompt)}`
+);
+
+const resposta = await response.text();
 
 const mensagens = document.querySelectorAll(".bot");
+
+if(mensagens.length > 0){
 mensagens[mensagens.length - 1].remove();
-
-if(
-texto.includes("comprar") ||
-texto.includes("pedido") ||
-texto.includes("finalizar") ||
-texto.includes("atendente")
-){
-botMessage(
-"Perfeito! Vou transferir você para nossa atendente Mariana. Ela irá finalizar seu pedido."
-);
-return;
 }
 
-for(const produto of produtos){
+botMessage(resposta);
 
-if(texto.includes(produto.nome.split(" ")[0])){
+}catch(error){
 
-botMessage(
-`${produto.nome.toUpperCase()}
-Preço: ${produto.preco}
-Cores: ${produto.cores.join(", ")}
-Tamanhos: ${produto.tamanhos.join(", ")}`
-);
+const mensagens = document.querySelectorAll(".bot");
 
-return;
-}
+if(mensagens.length > 0){
+mensagens[mensagens.length - 1].remove();
 }
 
-if(texto.includes("frete")){
-botMessage(
-"Entregamos para todo o Brasil. Frete grátis acima de R$ 199."
-);
-return;
+botMessage("Erro ao conectar com a assistente virtual.");
+
 }
 
-if(texto.includes("pix") || texto.includes("pagamento")){
-botMessage(
-"Aceitamos PIX, cartão de crédito, débito e boleto."
-);
-return;
 }
-
-if(texto.includes("horário")){
-botMessage(
-"Nosso atendimento funciona de segunda a sexta das 8h às 18h."
-);
-return;
-}
-
-botMessage(
-"Posso ajudar com produtos, tamanhos, preços, estoque, frete ou formas de pagamento."
-);
-
-},1000);
-    
-}
-
 </script>
