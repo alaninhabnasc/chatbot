@@ -70,12 +70,17 @@
         word-wrap: break-word;
     }
 
-    .bot {
-        background: #ffffff;
-        color: #4b0082;
-    }
+   .bot {
+background: #ffffff;
+color: #4b0082;
+padding: 12px 15px;
+border-radius: 15px;
+max-width: 85%;
+box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+white-space: pre-line;
+}
 
-    .user {
+ .user {
         background: #7b43b4;
         color: #fff;
         margin-left: auto;
@@ -169,14 +174,20 @@ botMessage("Quando desejar finalizar uma compra, solicite um atendente.");
 
 function botMessage(text) {
 
-    const chat = document.getElementById("chat");
+const chat = document.getElementById("chat");
 
-    chat.innerHTML += `
-        <div class="message bot">${text}</div>
-    `;
+const div = document.createElement("div");
 
-    chat.scrollTop = chat.scrollHeight;
+div.className = "message bot";
+
+div.textContent = text;
+
+chat.appendChild(div);
+
+chat.scrollTop = chat.scrollHeight;
+
 }
+
 
 function userMessage(text) {
 
@@ -223,12 +234,31 @@ botMessage("Digitando...");
 const prompt = `
 Você é Mariana, assistente virtual da loja ModaViva.
 
-REGRAS:
+REGRAS IMPORTANTES:
 
-* Responda apenas sobre a ModaViva.
-* Seja simpática e profissional.
-* Não fale de assuntos fora da loja.
-* Nunca invente produtos.
+* Responda apenas o que o cliente perguntou.
+* Não mostre todo o catálogo de uma vez.
+* Seja breve.
+* Responda como uma atendente real.
+
+Exemplos:
+
+Cliente: "Tem camisa preta?"
+Resposta: "Sim! Temos camisa social preta disponível. Gostaria de saber os tamanhos?"
+
+Cliente: "Quais os tamanhos?"
+Resposta: "Temos P, M, G e GG."
+
+Cliente: "Tem tamanho G?"
+Resposta: "Sim, temos 7 unidades em estoque."
+
+Cliente: "Qual o preço?"
+Resposta: "A camisa social custa R$ 89,90."
+
+Cliente: "Quero comprar."
+Resposta: "Perfeito! Vou transferir você para nossa atendente Mariana para finalizar seu pedido."
+
+Nunca envie informações que o cliente não pediu.
 
 LOJA MODAVIVA
 
