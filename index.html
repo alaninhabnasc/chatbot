@@ -159,10 +159,15 @@
 
 window.onload = () => {
 
-    botMessage("Olá! 💜");
-    botMessage("Sou a assistente virtual do setor de vendas. Como posso ajudar?");
+window.onload = () => {
+
+botMessage("Olá! 💜");
+botMessage("Bem-vindo à ModaViva.");
+botMessage("Posso informar preços, tamanhos, cores, estoque, frete e formas de pagamento.");
+botMessage("Quando desejar finalizar uma compra, solicite um atendente.");
 
 };
+
 
 function botMessage(text) {
 
@@ -215,74 +220,91 @@ document
 
 async function handleResponse(msg) {
 
-    botMessage("Digitando...");
+const produtos = [
+{
+nome: "camiseta básica premium",
+preco: "R$ 49,90",
+cores: ["preto", "branco", "azul", "vermelho"],
+tamanhos: ["P", "M", "G", "GG"]
+},
+{
+nome: "camisa social slim",
+preco: "R$ 89,90",
+cores: ["branco", "azul", "preto"],
+tamanhos: ["P", "M", "G", "GG"]
+},
+{
+nome: "calça jeans premium",
+preco: "R$ 129,90",
+cores: ["azul", "preto"],
+tamanhos: ["38", "40", "42", "44", "46"]
+}
+];
 
-    setTimeout(() => {
+function handleResponse(msg){
 
-        const texto = msg.toLowerCase();
+botMessage("Digitando...");
 
-        const mensagens = document.querySelectorAll(".bot");
+setTimeout(() => {
 
-        if (mensagens.length > 0) {
-            mensagens[mensagens.length - 1].remove();
-        }
+const texto = msg.toLowerCase();
 
-        if (
-            texto.includes("roupa") ||
-            texto.includes("camisa") ||
-            texto.includes("camiseta")
-        ) {
+const mensagens = document.querySelectorAll(".bot");
+mensagens[mensagens.length - 1].remove();
 
-            botMessage(
-                "Temos diversas roupas disponíveis. Qual modelo você procura?"
-            );
+if(
+texto.includes("comprar") ||
+texto.includes("pedido") ||
+texto.includes("finalizar") ||
+texto.includes("atendente")
+){
+botMessage(
+"Perfeito! Vou transferir você para nossa atendente Mariana. Ela irá finalizar seu pedido."
+);
+return;
+}
 
-        } else if (
-            texto.includes("preço") ||
-            texto.includes("valor") ||
-            texto.includes("custa")
-        ) {
+for(const produto of produtos){
 
-            botMessage(
-                "Os preços variam conforme o produto. Qual item deseja consultar?"
-            );
+if(texto.includes(produto.nome.split(" ")[0])){
 
-        } else if (
-            texto.includes("entrega") ||
-            texto.includes("frete")
-        ) {
+botMessage(
+`${produto.nome.toUpperCase()}
+Preço: ${produto.preco}
+Cores: ${produto.cores.join(", ")}
+Tamanhos: ${produto.tamanhos.join(", ")}`
+);
 
-            botMessage(
-                "Realizamos entregas para todo o Brasil."
-            );
+return;
+}
+}
 
-        } else if (
-            texto.includes("pagamento") ||
-            texto.includes("pix") ||
-            texto.includes("cartão")
-        ) {
+if(texto.includes("frete")){
+botMessage(
+"Entregamos para todo o Brasil. Frete grátis acima de R$ 199."
+);
+return;
+}
 
-            botMessage(
-                "Aceitamos PIX, cartão de crédito e débito."
-            );
+if(texto.includes("pix") || texto.includes("pagamento")){
+botMessage(
+"Aceitamos PIX, cartão de crédito, débito e boleto."
+);
+return;
+}
 
-        } else if (
-            texto.includes("estoque")
-        ) {
+if(texto.includes("horário")){
+botMessage(
+"Nosso atendimento funciona de segunda a sexta das 8h às 18h."
+);
+return;
+}
 
-            botMessage(
-                "Temos produtos disponíveis em estoque."
-            );
+botMessage(
+"Posso ajudar com produtos, tamanhos, preços, estoque, frete ou formas de pagamento."
+);
 
-        } else {
-
-            botMessage(
-                "Desculpe, posso ajudar apenas com assuntos relacionados ao setor de vendas."
-            );
-
-        }
-
-    }, 1000);
+},1000);
 }
 
 </script>
