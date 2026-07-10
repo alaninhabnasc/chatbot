@@ -1,0 +1,14 @@
+[
+    {
+        "nome": "Maria",
+        "servico": "Escova",
+        "data": "10/07",
+        "hora": "14:00"
+    },
+    {
+        "nome": "João",
+        "servico": "Corte Masculino",
+        "data": "10/07",
+        "hora": "15:00"
+    }
+]
