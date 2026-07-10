@@ -37,6 +37,6 @@ let r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(prompt));
 let txt=await r.text();
 document.querySelector(".bot:last-child").remove();
 botMessage(txt);
-}catch(e){document.querySelector(".bot:last-child").remove();botMessage("Erro ao conectar com a IA.");}
+}catch(e){document.querySelector(".bot:last-child").remove();botMessage("Desculpe, não conseguimos entender, por favor repetir.");}
 }
 </script></body></html>
