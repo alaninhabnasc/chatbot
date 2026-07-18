@@ -11,7 +11,13 @@ body{background:#7b43b4;font-family:Arial;margin:0;display:flex;justify-content:
 <script>
 const chat=document.getElementById("chat");
 let modo="";
-function botMessage(t){let d=document.createElement("div");d.className="message bot";d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function botMessage(t){
+ let d=document.createElement("div");
+ d.className="message bot";
+ const texto=t.replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:#25D366;font-weight:bold;text-decoration:none;">💬 Falar com uma atendente</a>');
+ d.innerHTML=texto.replace(/\n/g,"<br>");
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
 function userMessage(t){let d=document.createElement("div");d.className="message user";d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 window.onload=()=>{botMessage("Olá! 💜");botMessage("Bem-vindo ao Salão Bella Estética.");botMessage("Antes de começarmos, escolha o tipo de atendimento:");botMessage("1️⃣ Detalhado\n2️⃣ Direto");}
 document.getElementById("userInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});
@@ -20,17 +26,17 @@ let input=document.getElementById("userInput");let msg=input.value.trim();if(!ms
 if(!modo){
  if(msg=="1"||msg.toLowerCase().includes("detal")){modo="detalhado";botMessage("Perfeito! Farei um atendimento acolhedor e detalhado. 😊");return;}
  if(msg=="2"||msg.toLowerCase().includes("dire")){modo="direto";botMessage("Perfeito! Responderei de forma rápida e objetiva. 👍");return;}
- botMessage("Escolha 1 para Detalhado ou 2 para Direto.");return;
-}
-let estilo=modo==="detalhado"?
-"Seja muito simpática, acolhedora, explique tudo em até 6 frases, use poucos emojis e sempre agradeça.":
-"Seja objetiva, responda em no máximo 2 frases, vá direto ao ponto e agradeça.";
+ botMessage("Escolha 1 para Detalhado ou 2 para Direto.");return;}
+let estilo=modo==="detalhado"?"Seja muito simpática, acolhedora, explique tudo em até 6 frases, use poucos emojis e sempre agradeça.":"Seja objetiva, responda em no máximo 2 frases, vá direto ao ponto e agradeça.";
 let prompt=`Você é Sofia, recepcionista do Salão Bella Estética.
 ${estilo}
 Serviços: Corte Feminino R$70, Corte Masculino R$45, Escova R$40, Hidratação R$80, Progressiva a partir de R$250, Coloração a partir de R$180, Manicure R$35, Pedicure R$40, Design de sobrancelhas R$30, Maquiagem R$120.
 Horário: Segunda a Sexta 08:00 às 18:00. Sábado 08:00 às 16:00.
 Pagamento: PIX, Cartão e Dinheiro.
-Nunca invente informações. Responda em português. Pergunta: ${msg}`;
+Nunca invente informações. Responda em português.
+Quando a conversa terminar ou o cliente quiser atendimento humano, finalize agradecendo e inclua:
+https://wa.me/5589981101951
+Pergunta: ${msg}`;
 botMessage("Digitando...");
 try{
 let r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(prompt));
