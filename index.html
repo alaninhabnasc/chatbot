@@ -2,24 +2,30 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DialogX - Salão</title>
 
 <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background: #7b43b4;
-    font-family: Arial;
-    margin: 0;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 10px;
 }
 
 .chat-container {
     background: #dde1ff;
     width: 380px;
-    max-width: 95%;
+    max-width: 100%;
     padding: 20px;
     border-radius: 15px;
     display: flex;
@@ -58,6 +64,7 @@ body {
     margin: 8px 0;
     max-width: 80%;
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 .bot {
@@ -74,16 +81,20 @@ body {
 .input-row {
     display: flex;
     gap: 8px;
+    width: 100%;
 }
 
-/* CAMPO DE MENSAGEM AJUSTADO */
-input {
+/* CORREÇÃO DO ZOOM NO CAMPO DE MENSAGEM */
+#userInput {
     flex: 1;
+    width: 0;
+    min-width: 0;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
-    font-size: 16px;
-    min-width: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
 }
 
 button {
@@ -93,6 +104,7 @@ button {
     padding: 10px 18px;
     border-radius: 10px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 </style>
 </head>
@@ -102,14 +114,14 @@ button {
 <div class="chat-container">
 
     <div class="logo">
-        <img src="logo.jpeg">
+        <img src="logo.jpeg" alt="Logo do DialogX">
         <span>DialogX</span>
     </div>
 
     <div id="chat"></div>
 
     <div class="input-row">
-        <input id="userInput" placeholder="Digite aqui...">
+        <input id="userInput" type="text" placeholder="Digite aqui...">
         <button onclick="sendMessage()">Enviar</button>
     </div>
 
@@ -125,7 +137,7 @@ function botMessage(t) {
 
     const texto = t.replace(
         /(https?:\/\/[^\s]+)/g,
-        '<a href="$1" target="_blank" style="color:#25D366;font-weight:bold;text-decoration:none;">💬 Falar com uma atendente</a>'
+        '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#25D366;font-weight:bold;text-decoration:none;">💬 Falar com uma atendente</a>'
     );
 
     d.innerHTML = texto.replace(/\n/g, "<br>");
@@ -149,7 +161,9 @@ window.onload = () => {
 };
 
 document.getElementById("userInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter") {
+        sendMessage();
+    }
 });
 
 async function sendMessage() {
@@ -162,13 +176,13 @@ async function sendMessage() {
     input.value = "";
 
     if (!modo) {
-        if (msg == "1" || msg.toLowerCase().includes("detal")) {
+        if (msg === "1" || msg.toLowerCase().includes("detal")) {
             modo = "detalhado";
             botMessage("Perfeito! Farei um atendimento acolhedor e detalhado. 😊");
             return;
         }
 
-        if (msg == "2" || msg.toLowerCase().includes("dire")) {
+        if (msg === "2" || msg.toLowerCase().includes("dire")) {
             modo = "direto";
             botMessage("Perfeito! Responderei de forma rápida e objetiva. 👍");
             return;
@@ -199,14 +213,18 @@ Pergunta: ${msg}`;
             "https://text.pollinations.ai/" + encodeURIComponent(prompt)
         );
 
+        if (!r.ok) {
+            throw new Error("Falha ao consultar o serviço.");
+        }
+
         let txt = await r.text();
 
         document.querySelector(".bot:last-child").remove();
         botMessage(txt);
 
     } catch (e) {
-        document.querySelector(".bot:last-child").remove();
-        botMessage("Desculpe, não conseguimos entender, por favor repetir.");
+        document.querySelector(".bot:last-child")?.remove();
+        botMessage("Desculpe, não conseguimos entender. Por favor, tente novamente.");
     }
 }
 </script>
