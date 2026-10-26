@@ -4,7 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cadastro de Empresa</title>
-
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DialogX - Salão</title>
+<style>
+body{background:#7b43b4;font-family:Arial;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
+.chat-container{background:#dde1ff;width:380px;max-width:95%;padding:20px;border-radius:15px;display:flex;flex-direction:column;box-shadow:0 0 10px #0003}
+.logo{display:flex;gap:10px;align-items:center;margin-bottom:10px}.logo img{width:60px;height:60px;border-radius:50%}.logo span{font-size:24px;color:#4b0082;font-weight:bold}
+#chat{height:420px;overflow-y:auto;margin-bottom:10px}.message{padding:10px 12px;border-radius:12px;margin:8px 0;max-width:80%;white-space:pre-wrap}.bot{background:#fff;color:#4b0082}.user{background:#7b43b4;color:#fff;margin-left:auto}.input-row{display:flex;gap:8px}input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}button{background:#7b43b4;color:#fff;border:none;padding:10px 18px;border-radius:10px;cursor:pointer}
+</style></head><body>
+<div class="chat-container"><div class="logo"><img src="logo.jpeg"><span>DialogX</span></div><div id="chat"></div><div class="input-row"><input id="userInput" placeholder="Digite aqui..."><button onclick="sendMessage()">Enviar</button></div></div>
+<script>
+const chat=document.getElementById("chat");
+let modo="";
+function botMessage(t){
+ let d=document.createElement("div");
+ d.className="message bot";
+ const texto=t.replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:#25D366;font-weight:bold;text-decoration:none;">💬 Falar com uma atendente</a>');
+ d.innerHTML=texto.replace(/\n/g,"<br>");
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function userMessage(t){let d=document.createElement("div");d.className="message user";d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+window.onload=()=>{botMessage("Olá! 💜");botMessage("Bem-vindo ao Salão Bella Estética.");botMessage("Antes de começarmos, escolha o tipo de atendimento:");botMessage("1️⃣ Detalhado\n2️⃣ Direto");}
+document.getElementById("userInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});
+async function sendMessage(){
+let input=document.getElementById("userInput");let msg=input.value.trim();if(!msg)return;userMessage(msg);input.value="";
+if(!modo){
+ if(msg=="1"||msg.toLowerCase().includes("detal")){modo="detalhado";botMessage("Perfeito! Farei um atendimento acolhedor e detalhado. 😊");return;}
+ if(msg=="2"||msg.toLowerCase().includes("dire")){modo="direto";botMessage("Perfeito! Responderei de forma rápida e objetiva. 👍");return;}
+ botMessage("Escolha 1 para Detalhado ou 2 para Direto.");return;}
+let estilo=modo==="detalhado"?"Seja muito simpática, acolhedora, explique tudo em até 6 frases, use poucos emojis e sempre agradeça.":"Seja objetiva, responda em no máximo 2 frases, vá direto ao ponto e agradeça.";
+let prompt=`Você é Sofia, recepcionista do Salão Bella Estética.
+${estilo}
+Serviços: Corte Feminino R$70, Corte Masculino R$45, Escova R$40, Hidratação R$80, Progressiva a partir de R$250, Coloração a partir de R$180, Manicure R$35, Pedicure R$40, Design de sobrancelhas R$30, Maquiagem R$120.
+Horário: Segunda a Sexta 08:00 às 18:00. Sábado 08:00 às 16:00.
+Pagamento: PIX, Cartão e Dinheiro.
+Nunca invente informações. Responda em português.
+Quando a conversa terminar ou o cliente quiser atendimento humano, finalize agradecendo e inclua:
+https://wa.me/5589981101951
+Pergunta: ${msg}`;
+botMessage("Digitando...");
+try{
+let r=await fetch("https://text.pollinations.ai/"+encodeURIComponent(prompt));
+let txt=await r.text();
+document.querySelector(".bot:last-child").remove();
+botMessage(txt);
+}catch(e){document.querySelector(".bot:last-child").remove();botMessage("Desculpe, não conseguimos entender, por favor repetir.");}
+}
+</script></body></html>
 <style>
 * {
     margin: 0;
